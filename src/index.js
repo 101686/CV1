@@ -11,7 +11,8 @@ import {
   Vector3,
   Color3,
   SceneLoader,
-  DeviceOrientationCamera
+  DeviceOrientationCamera,
+  Quaternion
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
@@ -84,21 +85,27 @@ SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
   newMeshes[0].position.x = 0;
   newMeshes[0].position.y = 0;
 });
+var freza = sphere;
+
 SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   newMeshes
 ) {
   // Set the target of the camera to the first imported mesh
-  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.15);
+  newMeshes[0].scaling = new Vector3(0.15, 0.15, 0.15);
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   newMeshes[0].position.z = 2;
   newMeshes[0].position.x = 1.5;
-  newMeshes[0].position.y = 0;
+
+  freza = newMeshes[0];
 });
 
+//const freza=[];
 //před vykreslením se vždy provede
 scene.registerBeforeRender(function () {
-  //sphere.position.x += 0.03;
+  freza.position.y += 0.00021;
+
   light1.setDirectionToTarget(sphere.position);
+  freza.rotate(new Vector3(0, 0, 1), (freza.rotation.y += 0.1));
 });
 
 // povinné vykreslování
@@ -117,3 +124,6 @@ environment1.ground.parent.position.y = 0;
 environment1.ground.position.y = 0;
 
 //scene.debugLayer.show();
+const keyFrames = [];
+
+keyFrames.push({});
