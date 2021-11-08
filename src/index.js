@@ -15,7 +15,7 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
-//canvas je grafické okno, to rozáhneme přes
+//canvas je grafické okno, to rozáhneme přes obrazovku
 const canvas = document.getElementById("renderCanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -84,6 +84,15 @@ SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
   newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   newMeshes[0].position.z = -2;
+});
+SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
+  newMeshes
+) {
+  // Set the target of the camera to the first imported mesh
+  newMeshes[0].scaling = new Vector3(0.15, 0.15, 0.175);
+  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  newMeshes[0].position.z = -2;
+  newMeshes[0].position.x = 1;
 });
 
 //před vykreslením se vždy provede
