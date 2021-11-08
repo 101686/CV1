@@ -62,7 +62,7 @@ var i = 0;
 for (i = 0; i < 3; i++) {
   var sphere = MeshBuilder.CreateCylinder(
     "freza",
-    { diameter: 0.2, height: 3 },
+    { diameter: 0.4, height: 3 },
     scene
   );
   sphere.position.x = i;
