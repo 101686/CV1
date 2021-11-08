@@ -11,7 +11,9 @@ import {
   Vector3,
   Color3,
   SceneLoader,
-  DeviceOrientationCamera
+  DeviceOrientationCamera,
+  Mesh,
+  Animation
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
@@ -85,6 +87,9 @@ SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   newMeshes[0].position.z = -2;
 });
+
+var freza = sphere;
+
 SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   newMeshes
 ) {
@@ -93,13 +98,49 @@ SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   newMeshes[0].position.z = -2;
   newMeshes[0].position.x = 1;
+  freza = newMeshes[0];
 });
 
 //před vykreslením se vždy provede
 scene.registerBeforeRender(function () {
   //sphere.position.x += 0.03;
   light1.setDirectionToTarget(sphere.position);
+
+  //pohyb frézy
+  freza.position.x += 0.0001;
+  freza.rotate(new Vector3(0, 0, 1), (freza.rotation.y += 0.001));
 });
+
+const frameRate = 10;
+const xSlide = new Animation(
+  "xSlide",
+  "position.x",
+  frameRate,
+  Animation.ANIMATIONTYPE_FLOAT,
+  Animation.ANIMATIONLOOPMODE_CYCLE
+);
+
+const keyFrames = [];
+
+keyFrames.push({
+  frame: 0,
+  value: 2
+});
+
+keyFrames.push({
+  frame: frameRate,
+  value: -2
+});
+
+keyFrames.push({
+  frame: 2 * frameRate,
+  value: 2
+});
+xSlide.setKeys(keyFrames);
+
+freza.animations.push(xSlide);
+
+scene.beginAnimation(freza, 0, 2 * frameRate, true);
 
 // povinné vykreslování
 engine.runRenderLoop(function () {
