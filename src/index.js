@@ -62,13 +62,13 @@ var i = 0;
 for (i = 0; i < 3; i++) {
   var sphere = MeshBuilder.CreateCylinder(
     "freza",
-    { diameter: 0.2, height: 3 },
+    { diameter: 0.5, height: 1 },
     scene
   );
   sphere.position.x = i;
   if (i === 2) {
     var Mat = new StandardMaterial("sedy", scene);
-    Mat.diffuseColor = new Color3(0.5, 0.5, 0.6);
+    Mat.diffuseColor = new Color3(0.0, 0.0, 0.7);
     sphere.material = Mat;
   }
 }
