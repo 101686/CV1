@@ -59,7 +59,7 @@ camera.attachControl(canvas, true);
 //   }
 // }
 var i = 0;
-for (i = 0; i < 5; i++) {
+for (i = 0; i < 3; i++) {
   var sphere = MeshBuilder.CreateCylinder(
     "freza",
     { diameter: 0.2, height: 3 },
