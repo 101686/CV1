@@ -66,9 +66,19 @@ for (i = 0; i < 3; i++) {
     scene
   );
   sphere.position.x = i;
+  if (i === 1) {
+    var Mat = new StandardMaterial("sedy", scene);
+    Mat.diffuseColor = new Color3(1, 0.5, 0.7);
+    sphere.material = Mat;
+  }
   if (i === 2) {
     var Mat = new StandardMaterial("sedy", scene);
-    Mat.diffuseColor = new Color3(0.5, 0.5, 0.6);
+    Mat.diffuseColor = new Color3(1, 0.5, 0.7);
+    sphere.material = Mat;
+  }
+  if (i === 0) {
+    var Mat = new StandardMaterial("sedy", scene);
+    Mat.diffuseColor = new Color3(1, 0.5, 0.7);
     sphere.material = Mat;
   }
 }
