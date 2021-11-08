@@ -41,34 +41,31 @@ camera.setTarget(new Vector3(0, 1, 0));
 //spojení kamery a grafikcého okna
 camera.attachControl(canvas, true);
 
-// var i = 0;
-// for (i = 0; i < 5; i++) {
-//   // Our built-in 'sphere' shape.
-//   var sphere = MeshBuilder.CreateCylinder(
-//     "sphere",
-//     { diameter: i * 0.2, height: 3, segments: 32 },
-//     scene
-//   );
-//   sphere.position.y = 2;
-//   sphere.position.x = i - 2;
-
-//   if (i === 2) {
-//     var blueMat = new StandardMaterial("blueMat", scene);
-//     blueMat.diffuseColor = new Color3(0.5, 0.5, 0.6);
-//     sphere.material = blueMat;
-//   }
+//var i = 0;
+//for (i = 0; i < 3; i++) {
+//var sphere = MeshBuilder.CreateCylinder(
+//"freza",
+//{ diameter: 0.2, height: 3 },
+//scene
+//);
+//sphere.position.x = i;
+//if (i === 2) {
+//var Mat = new StandardMaterial("sedy", scene);
+// Mat.diffuseColor = new Color3(0.55, 0.75, 0.6);
+// sphere.material = Mat;
 // }
+//}
 var i = 0;
-for (i = 0; i < 3; i++) {
+for (i = 0; i < 1; i++) {
   var sphere = MeshBuilder.CreateCylinder(
     "freza",
-    { diameter: 0.2, height: 3 },
+    { diameter: 0.2, height: 0.01 },
     scene
   );
   sphere.position.x = i;
   if (i === 2) {
     var Mat = new StandardMaterial("sedy", scene);
-    Mat.diffuseColor = new Color3(0.55, 0.75, 0.6);
+    Mat.diffuseColor = new Color3(0.1, 0.1, 0.6);
     sphere.material = Mat;
   }
 }
@@ -83,7 +80,19 @@ SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
   // Set the target of the camera to the first imported mesh
   newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  newMeshes[0].position.z = -2;
+  newMeshes[0].position.z = 0;
+  newMeshes[0].position.x = 0;
+  newMeshes[0].position.y = 0;
+});
+SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
+  newMeshes
+) {
+  // Set the target of the camera to the first imported mesh
+  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.15);
+  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  newMeshes[0].position.z = 2;
+  newMeshes[0].position.x = 1.5;
+  newMeshes[0].position.y = 0;
 });
 
 //před vykreslením se vždy provede
