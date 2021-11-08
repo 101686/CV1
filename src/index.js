@@ -15,7 +15,7 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
-//canvas je grafické okno, to rozáhneme přes obrazovku
+//canvas je grafické okno, to rozáhneme přes
 const canvas = document.getElementById("renderCanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
