@@ -80,7 +80,12 @@ var createScene = async function () {
   //const data = await SceneLoader.ImportMeshAsync("", "assets/", "car.obj", scene);
   // const carMeshes = data.meshes;
 
-  SceneLoader.ImportMeshAsync("", "public/", "freza.glb", scene);
+  const data2 = await SceneLoader.ImportMeshAsync(
+    "",
+    "public/",
+    "freza.glb",
+    scene
+  );
   //, function (newMeshes) {
   //  // Set the target of the camera to the first imported mesh
   //  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
@@ -88,7 +93,12 @@ var createScene = async function () {
   //  newMeshes[0].position.z = -2;
   //});
   //var freza = sphere;
-  SceneLoader.ImportMeshAsync("", "public/", "endmill.glb", scene);
+  const data3 = SceneLoader.ImportMeshAsync(
+    "",
+    "public/",
+    "endmill.glb",
+    scene
+  );
   //, function (
   //  newMeshes
   //) {
@@ -104,8 +114,8 @@ var createScene = async function () {
   scene.registerBeforeRender(function () {
     //sphere.position.x += 0.03;
     light1.setDirectionToTarget(sphere.position);
-    //var carMesh = carMeshes[0];
-    // carMesh.rotate(new Vector3(0, 0, 1), (carMesh.rotation.y += 0.1));
+    var carMesh = data.meshes[0];
+    carMesh.rotate(new Vector3(0, 0, 1), (carMesh.rotation.y += 0.00001));
     // freza.position.x += 0.01;
     // freza.rotate(new Vector3(0, 0, 1), (freza.rotation.y += 0.1));
     // console.log(freza.rotation.y)
