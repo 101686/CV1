@@ -71,88 +71,83 @@ var createScene = async function () {
     new Vector3(-1, -1, -1),
     scene
   );
-  const data = await SceneLoader.ImportMeshAsync(
-    "",
-    "./public/",
-    "freza.glb",
-    scene
-  );
-  //const data = await SceneLoader.ImportMeshAsync("", "assets/", "car.obj", scene);
-  // const carMeshes = data.meshes;
 
-  const data2 = await SceneLoader.ImportMeshAsync(
+  const freza1 = await SceneLoader.ImportMeshAsync(
     "",
     "public/",
     "freza.glb",
     scene
   );
-  //, function (newMeshes) {
-  //  // Set the target of the camera to the first imported mesh
-  //  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
-  ////  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  //  newMeshes[0].position.z = -2;
-  //});
-  //var freza = sphere;
-  const data3 = SceneLoader.ImportMeshAsync(
+  // .then(function(newMeshes){
+  //   newMeshes.meshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
+  //   newMeshes.meshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  //   //newMeshes.meshes[0].position.x = 2;
+  //   newMeshes.meshes[0].position.z = 2;
+  // });
+  var frezaMesh1 = freza1.meshes[0];
+  frezaMesh1.rotate(new Vector3(0, 0, 1), (frezaMesh1.rotation.y += 0.00001));
+
+  frezaMesh1.scaling = new Vector3(0.1, 0.1, 0.07);
+  frezaMesh1.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  frezaMesh1.position.x = -1;
+  frezaMesh1.position.z = -2;
+
+  const freza2 = await SceneLoader.ImportMeshAsync(
     "",
     "public/",
     "endmill.glb",
     scene
   );
-  //, function (
-  //  newMeshes
-  //) {
-  // Set the target of the camera to the first imported mesh
-  //  newMeshes[0].scaling = new Vector3(0.15, 0.15, 0.15);
-  //  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  ///  newMeshes[0].position.x = 2;
-  //  newMeshes[0].position.z = -2;
-  // freza = newMeshes[0];
-  //});
+
+  var frezaMesh2 = freza2.meshes[0];
+  frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
+
+  frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
+  frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  frezaMesh2.position.x = 2;
+  frezaMesh2.position.z = -2;
 
   //před vykreslením se vždy provede
   scene.registerBeforeRender(function () {
     //sphere.position.x += 0.03;
     light1.setDirectionToTarget(sphere.position);
-    var carMesh = data.meshes[0];
-    carMesh.rotate(new Vector3(0, 0, 1), (carMesh.rotation.y += 0.00001));
-    // freza.position.x += 0.01;
-    // freza.rotate(new Vector3(0, 0, 1), (freza.rotation.y += 0.1));
-    // console.log(freza.rotation.y)
-    //freza.rotation.z += 0.05;
-  });
-  const frameRate = 10;
-  const xSlide = new Animation(
-    "xSlide",
-    "position.x",
-    frameRate,
-    Animation.ANIMATIONTYPE_FLOAT,
-    Animation.ANIMATIONLOOPMODE_CYCLE
-  );
 
-  const keyFrames = [];
-
-  keyFrames.push({
-    frame: 0,
-    value: 2
+    frezaMesh1.rotate(new Vector3(0, 0, 1), (frezaMesh1.rotation.y += 0.00001));
+    frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
   });
 
-  keyFrames.push({
-    frame: frameRate,
-    value: -2
-  });
+  var animationFunction = function () {
+    const frameRate = 10;
+    const xSlide = new Animation(
+      "xSlide",
+      "position.x",
+      frameRate,
+      Animation.ANIMATIONTYPE_FLOAT,
+      Animation.ANIMATIONLOOPMODE_CYCLE
+    );
 
-  keyFrames.push({
-    frame: 2 * frameRate,
-    value: 2
-  });
+    const keyFrames = [];
 
-  xSlide.setKeys(keyFrames);
+    keyFrames.push({
+      frame: 0,
+      value: 1
+    });
 
-  //carMeshes.animations.push(xSlide);
+    keyFrames.push({
+      frame: frameRate,
+      value: -1
+    });
 
-  //scene.beginAnimation(carMeshes, 0, 2 * frameRate, true);
+    keyFrames.push({
+      frame: 2 * frameRate,
+      value: 1
+    });
 
+    xSlide.setKeys(keyFrames);
+    frezaMesh1.animations.push(xSlide);
+    scene.beginAnimation(frezaMesh1, 0, 2 * frameRate, true);
+  };
+  animationFunction();
   // povinné vykreslování
   engine.runRenderLoop(function () {
     scene.render();
@@ -167,9 +162,6 @@ var createScene = async function () {
   environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
   environment1.ground.parent.position.y = 0;
   environment1.ground.position.y = 0;
-
-  //SceneLoader.ImportMeshAsync("", "./src/assets/glb/", "scene.glb");
-
   return scene;
 };
 
@@ -186,7 +178,7 @@ var initFunction = async function () {
   };
 
   engine = await asyncEngineCreation();
-  //if (!engine) throw "engine should not be null.";
+  if (!engine) throw "engine should not be null.";
   scene = createScene();
 };
 
