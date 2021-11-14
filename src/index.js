@@ -4,12 +4,9 @@ import "./styles.css"; // keep this here!
 import {
   Engine,
   Scene,
-  UniversalCamera,
   MeshBuilder,
   StandardMaterial,
   DirectionalLight,
-  HemisphericLight,
-  FreeCamera,
   Vector3,
   Color3,
   SixDofDragBehavior,
@@ -93,34 +90,42 @@ var createScene = async function () {
   frezaMesh1.position.x = -1;
   frezaMesh1.position.z = -2;
 
-  const freza2 = await SceneLoader.ImportMeshAsync(
-    "",
-    "public/",
-    "endmill.glb",
-    scene
-  );
-
-  var frezaMesh2 = freza2.meshes[0];
-  frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
-
-  frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
-  frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  frezaMesh2.position.x = 2;
-  frezaMesh2.position.z = -2;
-  var sixDofDragBehavior = new SixDofDragBehavior();
-  sixDofDragBehavior.rotateDraggedObject = true;
-  // sixDofDragBehavior. = false;
-  let frezasubmesh = new Mesh();
-  frezasubmesh = frezaMesh2;
-  frezasubmesh.addBehavior(sixDofDragBehavior);
-  //před vykreslením se vždy provede
-  scene.registerBeforeRender(function () {
-    //sphere.position.x += 0.03;
-    light1.setDirectionToTarget(sphere.position);
-
-    frezaMesh1.rotate(new Vector3(0, 0, 1), (frezaMesh1.rotation.y += 0.00001));
+  var FrezaFunction = async function () {
+    const freza2 = await SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "endmill.glb",
+      scene
+    );
+    var frezaMesh2 = freza2.meshes[0];
     frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
-  });
+
+    frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
+    frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+    frezaMesh2.position.x = 2;
+    frezaMesh2.position.z = -2;
+    var sixDofDragBehavior = new SixDofDragBehavior();
+    sixDofDragBehavior.rotateDraggedObject = true;
+    // sixDofDragBehavior. = false;
+    let frezasubmesh = new Mesh();
+    frezasubmesh = frezaMesh2;
+    frezasubmesh.addBehavior(sixDofDragBehavior);
+    //před vykreslením se vždy provede
+    scene.registerBeforeRender(function () {
+      //sphere.position.x += 0.03;
+      light1.setDirectionToTarget(sphere.position);
+      if (frezaMesh1.position.x > -1) {
+        frezaMesh1.rotate(
+          new Vector3(0, 0, 1),
+          (frezaMesh1.rotation.y += 0.001)
+        );
+      }
+
+      frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.001));
+    });
+  };
+
+  FrezaFunction();
 
   var animationFunction = function () {
     const frameRate = 10;
@@ -141,7 +146,7 @@ var createScene = async function () {
 
     keyFrames.push({
       frame: frameRate,
-      value: -1
+      value: -2
     });
 
     keyFrames.push({
@@ -162,7 +167,7 @@ var createScene = async function () {
     enableGroundShadow: true
   });
 
-  const xrHelper = await scene.createDefaultXRExperienceAsync({
+  await scene.createDefaultXRExperienceAsync({
     floorMeshes: [environment1.ground]
   });
   environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
@@ -184,7 +189,7 @@ var initFunction = async function () {
   };
 
   engine = await asyncEngineCreation();
-  if (!engine) throw "engine should not be null.";
+  // if (!engine) throw "engine should not be null.";
   scene = createScene();
 };
 
