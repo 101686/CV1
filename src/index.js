@@ -95,7 +95,7 @@ var createScene = async function () {
   var sixDofDragBehavior = new SixDofDragBehavior();
   sixDofDragBehavior.rotateDraggedObject = true;
   // sixDofDragBehavior. = false;
-  frezaMesh1.addBehavior(sixDofDragBehavior);
+  //frezaMesh1.addBehavior(sixDofDragBehavior);
 
   const freza2 = await SceneLoader.ImportMeshAsync(
     "",
