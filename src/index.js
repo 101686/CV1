@@ -92,10 +92,6 @@ var createScene = async function () {
   frezaMesh1.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   frezaMesh1.position.x = -1;
   frezaMesh1.position.z = -2;
-  var sixDofDragBehavior = new SixDofDragBehavior();
-  sixDofDragBehavior.rotateDraggedObject = true;
-  // sixDofDragBehavior. = false;
-  //frezaMesh1.addBehavior(sixDofDragBehavior);
 
   const freza2 = await SceneLoader.ImportMeshAsync(
     "",
@@ -111,7 +107,12 @@ var createScene = async function () {
   frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   frezaMesh2.position.x = 2;
   frezaMesh2.position.z = -2;
-
+  var sixDofDragBehavior = new SixDofDragBehavior();
+  sixDofDragBehavior.rotateDraggedObject = true;
+  // sixDofDragBehavior. = false;
+  let frezasubmesh = new Mesh();
+  frezasubmesh = frezaMesh2;
+  frezasubmesh.addBehavior(sixDofDragBehavior);
   //před vykreslením se vždy provede
   scene.registerBeforeRender(function () {
     //sphere.position.x += 0.03;
