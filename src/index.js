@@ -4,107 +4,207 @@ import "./styles.css"; // keep this here!
 import {
   Engine,
   Scene,
-  UniversalCamera,
   MeshBuilder,
   StandardMaterial,
   DirectionalLight,
   Vector3,
   Color3,
+  SixDofDragBehavior,
   SceneLoader,
-  DeviceOrientationCamera
+  DeviceOrientationCamera,
+  Mesh,
+  Animation
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
-//canvas je grafické okno, to rozáhneme přes obrazovku
-const canvas = document.getElementById("renderCanvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+var canvas = document.getElementById("renderCanvas");
 
-const engine = new Engine(canvas, true);
+var engine = null;
+var scene = null;
+var sceneToRender = null;
+var createDefaultEngine = function () {
+  return new Engine(canvas, true, {
+    preserveDrawingBuffer: true,
+    stencil: true,
+    disableWebGL2Support: false
+  });
+};
+var createScene = async function () {
+  // základní babylon scene objekt
+  var scene = new Scene(engine);
 
-//scéna neměnit
-const scene = new Scene(engine);
-// Default Environment
-
-//vytoření kamery v pozici -5 (dozadu)
-//const camera = new UniversalCamera("Camera", new Vector3(0, 5, 10), scene);
-//const camera = new UniversalCamera("kamera",new Vector3(1,1,10),scene);
-const camera = new DeviceOrientationCamera(
-  "kamera",
-  new Vector3(1, 1, 10),
-  scene
-);
-
-//zaměřit kameru do středu
-camera.setTarget(new Vector3(0, 1, 0));
-
-//spojení kamery a grafikcého okna
-camera.attachControl(canvas, true);
-
-// var i = 0;
-// for (i = 0; i < 5; i++) {
-//   // Our built-in 'sphere' shape.
-//   var sphere = MeshBuilder.CreateCylinder(
-//     "sphere",
-//     { diameter: i * 0.2, height: 3, segments: 32 },
-//     scene
-//   );
-//   sphere.position.y = 2;
-//   sphere.position.x = i - 2;
-
-//   if (i === 2) {
-//     var blueMat = new StandardMaterial("blueMat", scene);
-//     blueMat.diffuseColor = new Color3(0.5, 0.5, 0.6);
-//     sphere.material = blueMat;
-//   }
-// }
-var i = 0;
-for (i = 0; i < 3; i++) {
-  var sphere = MeshBuilder.CreateCylinder(
-    "freza",
-    { diameter: 0.2, height: 3 },
+  //vytoření kamery v pozici -5 (dozadu)
+  //const camera = new UniversalCamera("Camera", new Vector3(0, 5, 10), scene);
+  //const camera = new UniversalCamera("kamera",new Vector3(1,1,10),scene);
+  const camera = new DeviceOrientationCamera(
+    "kamera",
+    new Vector3(1, 1, 10),
     scene
   );
-  sphere.position.x = i;
-  if (i === 2) {
-    var Mat = new StandardMaterial("sedy", scene);
-    Mat.diffuseColor = new Color3(1, 1, 0.6);
-    sphere.material = Mat;
+
+  //zaměřit kameru do středu
+  camera.setTarget(new Vector3(0, 1, 0));
+
+  //spojení kamery a grafikcého okna
+  camera.attachControl(canvas, true);
+
+  var i = 0;
+  for (i = 0; i < 3; i++) {
+    var sphere = MeshBuilder.CreateCylinder(
+      "freza",
+      { diameter: 0.2, height: 3 },
+      scene
+    );
+    sphere.position.x = i;
+    if (i === 2) {
+      var Mat = new StandardMaterial("sedy", scene);
+      Mat.diffuseColor = new Color3(0.5, 0.5, 0.6);
+      sphere.material = Mat;
+    }
   }
-}
 
-//světlo
-const light1 = new DirectionalLight(
-  "DirectionalLight",
-  new Vector3(-1, -1, -1),
-  scene
-);
-SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
-  // Set the target of the camera to the first imported mesh
-  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
-  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  newMeshes[0].position.z = -2;
+  //světlo
+  const light1 = new DirectionalLight(
+    "DirectionalLight",
+    new Vector3(-1, -1, -1),
+    scene
+  );
+
+  const freza1 = await SceneLoader.ImportMeshAsync(
+    "",
+    "public/",
+    "freza.glb",
+    scene
+  );
+  // .then(function(newMeshes){
+  //   newMeshes.meshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
+  //   newMeshes.meshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  //   //newMeshes.meshes[0].position.x = 2;
+  //   newMeshes.meshes[0].position.z = 2;
+  // });
+  var frezaMesh1 = freza1.meshes[0];
+  frezaMesh1.rotate(new Vector3(0, 0, 1), (frezaMesh1.rotation.y += 0.00001));
+
+  frezaMesh1.scaling = new Vector3(0.1, 0.1, 0.07);
+  frezaMesh1.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+  frezaMesh1.position.x = -1;
+  frezaMesh1.position.z = -2;
+
+  var FrezaFunction = async function () {
+    const freza2 = await SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "endmill.glb",
+      scene
+    );
+    var frezaMesh2 = freza2.meshes[0];
+    frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
+
+    frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
+    frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+    frezaMesh2.position.x = 2;
+    frezaMesh2.position.z = -2;
+    var sixDofDragBehavior = new SixDofDragBehavior();
+    sixDofDragBehavior.rotateDraggedObject = true;
+    // sixDofDragBehavior. = false;
+    let frezasubmesh = new Mesh();
+    frezasubmesh = frezaMesh2;
+    frezasubmesh.addBehavior(sixDofDragBehavior);
+    //před vykreslením se vždy provede
+    scene.registerBeforeRender(function () {
+      //sphere.position.x += 0.03;
+      light1.setDirectionToTarget(sphere.position);
+      if (frezaMesh1.position.x > -1) {
+        frezaMesh1.rotate(
+          new Vector3(0, 0, 1),
+          (frezaMesh1.rotation.y += 0.001)
+        );
+      }
+
+      frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.001));
+    });
+  };
+
+  FrezaFunction();
+
+  var animationFunction = function () {
+    const frameRate = 10;
+    const xSlide = new Animation(
+      "xSlide",
+      "position.x",
+      frameRate,
+      Animation.ANIMATIONTYPE_FLOAT,
+      Animation.ANIMATIONLOOPMODE_CYCLE
+    );
+
+    const keyFrames = [];
+
+    keyFrames.push({
+      frame: 0,
+      value: 1
+    });
+
+    keyFrames.push({
+      frame: frameRate,
+      value: -2
+    });
+
+    keyFrames.push({
+      frame: 2 * frameRate,
+      value: 1
+    });
+
+    xSlide.setKeys(keyFrames);
+    frezaMesh1.animations.push(xSlide);
+    scene.beginAnimation(frezaMesh1, 0, 2 * frameRate, true);
+  };
+  animationFunction();
+  // povinné vykreslování
+  engine.runRenderLoop(function () {
+    scene.render();
+  });
+  const environment1 = scene.createDefaultEnvironment({
+    enableGroundShadow: true
+  });
+
+  await scene.createDefaultXRExperienceAsync({
+    floorMeshes: [environment1.ground]
+  });
+  environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
+  environment1.ground.parent.position.y = 0;
+  environment1.ground.position.y = 0;
+  return scene;
+};
+
+var initFunction = async function () {
+  var asyncEngineCreation = async function () {
+    try {
+      return createDefaultEngine();
+    } catch (e) {
+      console.log(
+        "the available createEngine function failed. Creating the default engine instead"
+      );
+      return createDefaultEngine();
+    }
+  };
+
+  engine = await asyncEngineCreation();
+  // if (!engine) throw "engine should not be null.";
+  scene = createScene();
+};
+
+initFunction().then(() => {
+  scene.then((returnedScene) => {
+    sceneToRender = returnedScene;
+  });
+  engine.runRenderLoop(function () {
+    if (sceneToRender && sceneToRender.activeCamera) {
+      sceneToRender.render();
+    }
+  });
 });
 
-//před vykreslením se vždy provede
-scene.registerBeforeRender(function () {
-  //sphere.position.x += 0.03;
-  light1.setDirectionToTarget(sphere.position);
+// Resize
+window.addEventListener("resize", function () {
+  engine.resize();
 });
-
-// povinné vykreslování
-engine.runRenderLoop(function () {
-  scene.render();
-});
-const environment1 = scene.createDefaultEnvironment({
-  enableGroundShadow: true
-});
-const xrHelper = scene.createDefaultXRExperienceAsync({
-  // define floor meshes
-  floorMeshes: [environment1.ground]
-});
-environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
-environment1.ground.parent.position.y = 0;
-environment1.ground.position.y = 0;
-
-//scene.debugLayer.show();
