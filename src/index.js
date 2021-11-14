@@ -12,6 +12,7 @@ import {
   FreeCamera,
   Vector3,
   Color3,
+  SixDofDragBehavior,
   SceneLoader,
   DeviceOrientationCamera,
   Mesh,
@@ -91,6 +92,10 @@ var createScene = async function () {
   frezaMesh1.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   frezaMesh1.position.x = -1;
   frezaMesh1.position.z = -2;
+  var sixDofDragBehavior = new SixDofDragBehavior();
+  sixDofDragBehavior.rotateDraggedObject = true;
+  // sixDofDragBehavior. = false;
+  frezaMesh1.addBehavior(sixDofDragBehavior);
 
   const freza2 = await SceneLoader.ImportMeshAsync(
     "",
