@@ -89,44 +89,6 @@ var createScene = async function () {
   frezaMesh1.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   frezaMesh1.position.x = -1;
   frezaMesh1.position.z = -2;
-
-  var FrezaFunction = async function () {
-    const freza2 = await SceneLoader.ImportMeshAsync(
-      "",
-      "public/",
-      "endmill.glb",
-      scene
-    );
-    var frezaMesh2 = freza2.meshes[0];
-    frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
-
-    frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
-    frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-    frezaMesh2.position.x = 2;
-    frezaMesh2.position.z = -2;
-    var sixDofDragBehavior = new SixDofDragBehavior();
-    sixDofDragBehavior.rotateDraggedObject = true;
-    // sixDofDragBehavior. = false;
-    let frezasubmesh = new Mesh();
-    frezasubmesh = frezaMesh2;
-    frezasubmesh.addBehavior(sixDofDragBehavior);
-    //před vykreslením se vždy provede
-    scene.registerBeforeRender(function () {
-      //sphere.position.x += 0.03;
-      light1.setDirectionToTarget(sphere.position);
-      if (frezaMesh1.position.x > -1) {
-        frezaMesh1.rotate(
-          new Vector3(0, 0, 1),
-          (frezaMesh1.rotation.y += 0.001)
-        );
-      }
-
-      frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.001));
-    });
-  };
-
-  FrezaFunction();
-
   var animationFunction = function () {
     const frameRate = 10;
     const xSlide = new Animation(
@@ -159,10 +121,7 @@ var createScene = async function () {
     scene.beginAnimation(frezaMesh1, 0, 2 * frameRate, true);
   };
   animationFunction();
-  // povinné vykreslování
-  engine.runRenderLoop(function () {
-    scene.render();
-  });
+
   const environment1 = scene.createDefaultEnvironment({
     enableGroundShadow: true
   });
@@ -173,6 +132,42 @@ var createScene = async function () {
   environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
   environment1.ground.parent.position.y = 0;
   environment1.ground.position.y = 0;
+  var fnc = async function () {
+    //var frezaMesh2 = await FrezaFunction();
+    var frezaMeshaset = await SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "endmill.glb",
+      scene
+    );
+    var frezaMesh2 = frezaMeshaset.meshes[0];
+    frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.00001));
+
+    frezaMesh2.scaling = new Vector3(0.15, 0.15, 0.15);
+    frezaMesh2.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+    frezaMesh2.position.x = 2;
+    frezaMesh2.position.z = -2;
+    var sixDofDragBehavior = new SixDofDragBehavior();
+    sixDofDragBehavior.rotateDraggedObject = true;
+    // sixDofDragBehavior. = false;
+    let frezasubmesh = new Mesh();
+    frezasubmesh = frezaMesh2;
+    frezasubmesh.addBehavior(sixDofDragBehavior);
+    //před vykreslením se vždy provede
+    scene.registerBeforeRender(function () {
+      //sphere.position.x += 0.03;
+      // light1.setDirectionToTarget(sphere.position);
+      if (frezaMesh2.position.x > -1) {
+        frezaMesh2.rotate(
+          new Vector3(0, 0, 1),
+          (frezaMesh2.rotation.y += 0.01)
+        );
+      }
+
+      //frezaMesh2.rotate(new Vector3(0, 0, 1), (frezaMesh2.rotation.y += 0.001));
+    });
+  };
+  //fnc();
   return scene;
 };
 
@@ -189,8 +184,11 @@ var initFunction = async function () {
   };
 
   engine = await asyncEngineCreation();
-  // if (!engine) throw "engine should not be null.";
-  scene = createScene();
+  if (!engine) {
+    throw "engine should not be null.";
+  } else {
+    scene = createScene();
+  }
 };
 
 initFunction().then(() => {
