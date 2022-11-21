@@ -43,37 +43,7 @@ camera.setTarget(new Vector3(0, 1, 0));
 //spojení kamery a grafikcého okna
 camera.attachControl(canvas, true);
 
-// var i = 0;
-// for (i = 0; i < 5; i++) {
-//   // Our built-in 'sphere' shape.
-//   var sphere = MeshBuilder.CreateCylinder(
-//     "sphere",
-//     { diameter: i * 0.2, height: 3, segments: 32 },
-//     scene
-//   );
-//   sphere.position.y = 2;
-//   sphere.position.x = i - 2;
-
-//   if (i === 2) {
-//     var blueMat = new StandardMaterial("blueMat", scene);
-//     blueMat.diffuseColor = new Color3(0.5, 0.5, 0.6);
-//     sphere.material = blueMat;
-//   }
-// }
-var i = 0;
-for (i = 0; i < 3; i++) {
-  var sphere = MeshBuilder.CreateCylinder(
-    "freza",
-    { diameter: 0.2, height: 3 },
-    scene
-  );
-  sphere.position.x = i;
-  if (i === 2) {
-    var Mat = new StandardMaterial("sedy", scene);
-    Mat.diffuseColor = new Color3(1, 1, 0.6);
-    sphere.material = Mat;
-  }
-}
+//zde přídáme cyklus for
 
 //světlo
 const light1 = new DirectionalLight(
@@ -81,19 +51,12 @@ const light1 = new DirectionalLight(
   new Vector3(-1, -1, -1),
   scene
 );
-SceneLoader.ImportMesh("", "public/", "freza.glb", scene, function (newMeshes) {
-  // Set the target of the camera to the first imported mesh
-  newMeshes[0].scaling = new Vector3(0.1, 0.1, 0.07);
-  newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
-  newMeshes[0].position.z = -2;
-});
 
-var freza = sphere;
-
+var freza;
 SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   newMeshes
 ) {
-  // Set the target of the camera to the first imported mesh
+  // Pozice, měřítko a rotace
   newMeshes[0].scaling = new Vector3(0.15, 0.15, 0.175);
   newMeshes[0].rotate(new Vector3(-1, 0, 0), Math.PI / 2);
   newMeshes[0].position.z = -2;
@@ -101,46 +64,8 @@ SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   freza = newMeshes[0];
 });
 
-//před vykreslením se vždy provede
-scene.registerBeforeRender(function () {
-  //sphere.position.x += 0.03;
-  light1.setDirectionToTarget(sphere.position);
-
-  //pohyb frézy
-  freza.position.x += 0.0001;
-  freza.rotate(new Vector3(0, 0, 1), (freza.rotation.y += 0.001));
-});
-
-const frameRate = 10;
-const xSlide = new Animation(
-  "xSlide",
-  "position.x",
-  frameRate,
-  Animation.ANIMATIONTYPE_FLOAT,
-  Animation.ANIMATIONLOOPMODE_CYCLE
-);
-
-const keyFrames = [];
-
-keyFrames.push({
-  frame: 0,
-  value: 2
-});
-
-keyFrames.push({
-  frame: frameRate,
-  value: -2
-});
-
-keyFrames.push({
-  frame: 2 * frameRate,
-  value: 2
-});
-xSlide.setKeys(keyFrames);
-
-freza.animations.push(xSlide);
-
-scene.beginAnimation(freza, 0, 2 * frameRate, true);
+scene.registerBeforeRender(function () {});
+//zde uděláme animaci
 
 // povinné vykreslování
 engine.runRenderLoop(function () {
@@ -149,12 +74,6 @@ engine.runRenderLoop(function () {
 const environment1 = scene.createDefaultEnvironment({
   enableGroundShadow: true
 });
-const xrHelper = scene.createDefaultXRExperienceAsync({
-  // define floor meshes
-  floorMeshes: [environment1.ground]
-});
-environment1.setMainColor(new Color3.FromHexString("#74b9ff"));
-environment1.ground.parent.position.y = 0;
-environment1.ground.position.y = 0;
+// zde uděláme VR prostředí
 
 //scene.debugLayer.show();
