@@ -29,8 +29,6 @@ const scene = new Scene(engine);
 // Default Environment
 
 //vytoření kamery v pozici -5 (dozadu)
-//const camera = new UniversalCamera("Camera", new Vector3(0, 5, 10), scene);
-//const camera = new UniversalCamera("kamera",new Vector3(1,1,10),scene);
 const camera = new DeviceOrientationCamera(
   "kamera",
   new Vector3(1, 1, 10),
